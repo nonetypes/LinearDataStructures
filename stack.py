@@ -3,7 +3,8 @@
 #
 
 class Stack:
-    """List like object. Last in, first out.
+    """
+    List like object. Last in, first out.
     Concatenation support between various built-in objects.
     """
     def __init__(self, *items):
@@ -14,21 +15,25 @@ class Stack:
         """
         return str(self.items)
 
-    def __getitem__(self, item):
-        """Return the index of self.items
+    def __getitem__(self, index):
         """
-        return self.items[item]
+        Return an item from an index:
+
+            stack = Stack('a', 'b', 'c')
+            stack[1]                # returns 'b'
+        """
+        return self.items[index]
 
     def __add__(self, other_item):
         """
         Concatenation support:
 
             stack = Stack(1, 2, 3)
-            stack + 4 -> [1, 2, 3, 4]
-            stack + 'string' -> [1, 2, 3, 'string']
-            stack + [4, 5] -> [1, 2, 3, 4, 5]
-            stack + (4, 5) -> [1, 2, 3, (4, 5)]
-            stack + {'a': 1} -> [1, 2, 3, {'a': 1}]
+            stack + 4               # returns [1, 2, 3, 4]
+            stack + 'string'        # returns [1, 2, 3, 'string']
+            stack + [4, 5]          # returns [1, 2, 3, 4, 5]
+            stack + (4, 5)          # returns [1, 2, 3, (4, 5)]
+            stack + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
         if isinstance(other_item, type(self)):
             return self.items + other_item.items
@@ -42,15 +47,20 @@ class Stack:
         """
         self.items += [item]
 
-    def pop(self, item=None):
-        """Remove the given item from the stack.
+    def pop(self, index=None):
+        """Remove an item at given index from the stack.
 
-        Remove the last item if item is omitted.
+        Remove the last item if index is omitted.
         """
-        if item:
-            del self.items[self.items.index(item)]
+        if index:
+            del self.items[index]
         else:
             del self.items[-1]
+
+    def remove(self, item):
+        """Remove the given item from the stack.
+        """
+        del self.items[self.items.index(item)]
 
     def contains(self, item):
         """Return True if the given item is within the stack. False otherwise.
