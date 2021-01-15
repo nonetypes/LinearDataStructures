@@ -1,5 +1,5 @@
-# stack.py by Alexander Ralston
-# Last revised on 14/01/2021
+# stack.py by nonetypes
+# Last revised on 01/14/2021
 #
 
 class Stack:
