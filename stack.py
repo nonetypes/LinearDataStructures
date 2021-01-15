@@ -49,20 +49,3 @@ class Stack:
             return True
         else:
             return False
-
-
-stack = Stack(1, 2, 3)
-stack1 = Stack(5)
-print(stack+stack1)
-print(stack+[5, 6, 7])
-print(stack+'1234sdf')
-print(stack+(4, 1))
-print(stack[0])
-stack.append(4)
-print(stack.items)
-stack.pop(3)
-print(stack.items)
-stack.pop()
-print(stack.items)
-print(stack.contains(1))
-print(stack.contains(3))
