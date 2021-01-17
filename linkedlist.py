@@ -23,7 +23,7 @@ class Node:
 class LinkedList:
     """
     """
-    def __init__(self, item):
+    def __init__(self, item=None):
         self.head = item if type(item) == type(Node) else Node(item)
 
     def append_left(self, item):
@@ -37,17 +37,45 @@ class LinkedList:
         """
         """
         item = item if type(item) == type(Node) else Node(item)
-        value = self.head
-        while not value.is_tail():
-            value = value.next
-        value.next = item
+        link = self.head
+        while not link.is_tail():
+            link = link.next
+        link.next = item
+
+    def pop_left(self):
+        """
+        """
+        self.head = self.head.next
+
+    def pop_right(self):
+        """
+        """
+        link = self.head
+        while not link.is_tail():
+            link = link.next
+            if link.next.is_tail():
+                link.next = None
+
+    def contains(self, item):
+        """
+        """
+        link = self.head
+        while not link.is_tail():
+            if link.item == item:
+                return True
+            link = link.next
+
+        if link.item == item:
+            return True
+        else:
+            return False
 
     def py_list(self):
         """Return a list of all items from head to tail.
         """
-        value = self.head
-        py_list = [value]
-        while not value.is_tail():
-            py_list.append(value.next)
-            value = value.next
+        link = self.head
+        py_list = [link]
+        while not link.is_tail():
+            py_list.append(link.next)
+            link = link.next
         return py_list
