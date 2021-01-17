@@ -28,6 +28,41 @@ class LinkedList:
             items[i].next_node = items[i+1]
         self.head = items[0] if items else None
 
+    def __getitem__(self, index):
+        """
+        Return an item from an index:
+
+            linkedl = LinkedList('a', 'b', 'c')
+            linkedl[1]                # returns 'b'
+        """
+        if not isinstance(index, int):
+            raise TypeError('list indices must be integers or slices')
+        i = 0
+        if index == i:
+            return self.head.item
+        link = self.head
+        while link.next_node is not None:
+            if index == i:
+                return link.item
+            link = link.next_node
+            i += 1
+        raise IndexError('list index out of range')
+
+    def __setitem__(self, index, new_item):
+        if not isinstance(index, int):
+            raise TypeError('list indices must be integers or slices')
+        i = 0
+        if index == i:
+            self.head.item = new_item
+        else:
+            link = self.head
+            while link.next_node is not None:
+                if index == i:
+                    link.item = new_item
+                    break
+                link = link.next_node
+                i += 1
+
     def append_left(self, item):
         """Append an item to the beginning of the list, creating a new head node.
         """
