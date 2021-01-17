@@ -34,34 +34,34 @@ class LinkedList:
 
             linkedl = LinkedList('a', 'b', 'c')
             linkedl[1]                # returns 'b'
+        Negative indexes not supported.
         """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers or slices')
         i = 0
-        if index == i:
-            return self.head.item
         link = self.head
-        while link.next_node is not None:
+        while link is not None:
             if index == i:
                 return link.item
             link = link.next_node
             i += 1
-        raise IndexError('list index out of range')
+        if index >= i:
+            raise IndexError('list index out of range')
 
     def __setitem__(self, index, new_item):
+        """Item assignment. Negative indexes not supported.
+        """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers or slices')
         i = 0
-        if index == i:
-            self.head.item = new_item
-        else:
-            link = self.head
-            while link.next_node is not None:
-                if index == i:
-                    link.item = new_item
-                    break
-                link = link.next_node
-                i += 1
+        link = self.head
+        while link is not None:
+            if index == i:
+                link.item = new_item
+            link = link.next_node
+            i += 1
+        if index >= i:
+            raise IndexError('list index out of range')
 
     def append_left(self, item):
         """Append an item to the beginning of the list, creating a new head node.
@@ -82,6 +82,11 @@ class LinkedList:
                 link = link.next_node
             link.next_node = item
 
+    def append(self, item):
+        """Append an item to the end of the list.
+        """
+        self.append_right(item)
+
     def pop_left(self):
         """Remove the left most item in the list, creating a new head.
         """
@@ -100,28 +105,27 @@ class LinkedList:
                 else:
                     link = link.next_node
 
+    def pop(self):
+        """Remove the right most item in the list.
+        """
+        self.pop_right()
+
     def contains(self, item):
         """Return True if the given item is within the list. False otherwise.
         """
         link = self.head
-        while link.next_node is not None:
+        while link is not None:
             if link.item == item:
                 return True
             link = link.next_node
-
-        if link.item == item:
-            return True
-        else:
-            return False
+        return False
 
     def py_list(self):
         """Return a python list of all items from head to tail.
         """
         py_list = []
         link = self.head
-        if link is not None:
+        while link is not None:
             py_list.append(link.item)
-            while link.next_node is not None:
-                py_list.append(link.next_node.item)
-                link = link.next_node
+            link = link.next_node
         return py_list
