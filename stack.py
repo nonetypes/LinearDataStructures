@@ -21,7 +21,7 @@ class Stack:
             stack[1]                # returns 'b'
         """
         return self.items[index]
-    
+
     def __setitem__(self, index, new_item):
         """Item assignment.
         """

@@ -22,6 +22,11 @@ class Queue:
         """
         return self.items[index]
 
+    def __setitem__(self, index, new_item):
+        """Item assignment.
+        """
+        self.items[index] = new_item
+
     def __add__(self, other_item):
         """
         Concatenation support:
