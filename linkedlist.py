@@ -19,14 +19,16 @@ class LinkedList:
     Contains a head node which contains an item and the next node,
     containing the next item and so forth.
 
-    Arguments are optional.
-    Multiple argumets can be given to create multiple nodes in the list.
+    Arguments are optional. Multiple argumets can be given to create multiple linked nodes.
     """
     def __init__(self, *items):
         items = [item if isinstance(item, Node) else Node(item) for item in items]
         for i in range(len(items)-1):
             items[i].next_node = items[i+1]
         self.head = items[0] if items else None
+
+    def __repr__(self):
+        return str(self.py_list())
 
     def __getitem__(self, index):
         """
