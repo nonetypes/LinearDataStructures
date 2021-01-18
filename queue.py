@@ -1,8 +1,8 @@
-# stack.py by nonetypes
-# Last revised on 01/14/2021
+# queue.py by nonetypes
+# Last revised on 01/16/2021
 
-class Stack:
-    """List like object. Last in, first out.
+class Queue:
+    """List like object. First in, first out.
     Concatenation support between various built-in objects.
     """
     def __init__(self, *items):
@@ -17,8 +17,8 @@ class Stack:
         """
         Return an item from an index:
 
-            stack = Stack('a', 'b', 'c')
-            stack[1]                # returns 'b'
+            queue = Queue('a', 'b', 'c')
+            queue[1]                # returns 'b'
         """
         return self.items[index]
 
@@ -31,12 +31,12 @@ class Stack:
         """
         Concatenation support:
 
-            stack = Stack(1, 2, 3)
-            stack + 4               # returns [1, 2, 3, 4]
-            stack + 'string'        # returns [1, 2, 3, 'string']
-            stack + [4, 5]          # returns [1, 2, 3, 4, 5]
-            stack + (4, 5)          # returns [1, 2, 3, (4, 5)]
-            stack + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
+            queue = Queue(1, 2, 3)
+            queue + 4               # returns [1, 2, 3, 4]
+            queue + 'string'        # returns [1, 2, 3, 'string']
+            queue + [4, 5]          # returns [1, 2, 3, 4, 5]
+            queue + (4, 5)          # returns [1, 2, 3, (4, 5)]
+            queue + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
         if isinstance(other_item, type(self)):
             return self.items + other_item.items
@@ -46,27 +46,27 @@ class Stack:
             return self.items + [other_item]
 
     def append(self, item):
-        """Append an item to the end of the stack.
+        """Append an item to the end of the queue.
         """
         self.items += [item]
 
     def pop(self, index=None):
-        """Remove an item at given index from the stack.
+        """Remove an item at given index from the queue.
 
-        Remove the last item if index is omitted.
+        Remove the first item if index is omitted.
         """
         if index:
             del self.items[index]
         else:
-            del self.items[-1]
+            del self.items[0]
 
     def remove(self, item):
-        """Remove the given item from the stack.
+        """Remove the given item from the queue.
         """
         del self.items[self.items.index(item)]
 
     def contains(self, item):
-        """Return True if the given item is within the stack. False otherwise.
+        """Return True if the given item is within the queue. False otherwise.
         """
         if item in self.items:
             return True
