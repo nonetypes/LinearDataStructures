@@ -1,25 +1,26 @@
-# linkedlist.py by nonetypes
+# doublylinkedlist.py by nonetypes
 # Last revised on 01/21/2021
 
 class Node:
-    """Node obect to make up the links within a LinkedList.
+    """Node obect to make up the links within a DoublyLinkedList.
 
-    Contains an item and the next node in the chain.
+    Contains an item and the next and previous nodes in the chain.
     """
     def __init__(self, item=None):
         self.item = item
+        self.prev_node = None
         self.next_node = None
 
     def __repr__(self):
         return str(self.item)
 
 
-class LinkedList:
+class DoublyLinkedList:
     """Linear data structure -- list like object.
-    Contains a head node which contains an item and the next node,
-    containing the next item and so forth.
+    Contains a head node and a tail node.
+    Each node contains an item and the previous and next node in the list.
 
-    head(item, next_node) -> next_node(item, next_node) -> next_node(item, None)
+    head(item, None, next_node) -> next_node(item, head, tail) -> tail(item, prev_node, None)
 
     Arguments are optional.
     Multiple argumets can be given to create multiple nodes in the list.
@@ -28,7 +29,9 @@ class LinkedList:
         items = [item if isinstance(item, Node) else Node(item) for item in items]
         for i in range(len(items)-1):
             items[i].next_node = items[i+1]
+            items[i+1].prev_node = items[i]
         self.head = items[0] if items else None
+        self.tail = items[-1] if items else None
 
     def __repr__(self):
         return str(self.py_list())
@@ -37,12 +40,12 @@ class LinkedList:
         """
         Return an item from an index:
 
-            linked = LinkedList('a', 'b', 'c')
+            linked = DoublyLinkedList('a', 'b', 'c')
             linked[1]                # returns 'b'
-        Negative indexes and slices not supported.
+        Negative indexes not supported.
         """
         if not isinstance(index, int):
-            raise TypeError('list indices must be integers')
+            raise TypeError('list indices must be integers or slices')
         i = 0
         link = self.head
         while link is not None:
@@ -57,7 +60,7 @@ class LinkedList:
         """
         Item assignment. Negative indexes not supported.
 
-            linked = LinkedList(1, 5, 3)
+            linked = DoublyLinkedList(1, 5, 3)
             linked[1] = 2                # Changes 5 to 2
         """
         if not isinstance(index, int):
@@ -77,101 +80,81 @@ class LinkedList:
         """
         item = item if isinstance(item, Node) else Node(item)
         item.next_node = self.head
+        if self.head is not None:
+            self.head.prev_node = item
+        if self.tail is None:
+            self.tail = item
         self.head = item
 
     def append_right(self, item):
         """Append an item to the end of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
+        item.prev_node = self.tail
+        if self.tail is not None:
+            self.tail.next_node = item
         if self.head is None:
             self.head = item
-        else:
-            link = self.head
-            while link.next_node is not None:
-                link = link.next_node
-            link.next_node = item
+        self.tail = item
 
     def append(self, item):
         """Append an item to the end of the list.
         """
         self.append_right(item)
 
-    def insert(self, index, item):
-        """Insert the given item at the given index.
-        """
-        if not isinstance(index, int):
-            raise TypeError('list indices must be integers')
-        item = item if isinstance(item, Node) else Node(item)
-        if index == 0:
-            item.next_node = self.head
-            self.head = item
-        else:
-            inserted = False
-            i = 0
-            link = self.head
-            while link is not None:
-                if i+1 == index:
-                    item.next_node = link.next_node
-                    link.next_node = item
-                    inserted = True
-                link = link.next_node
-                i += 1
-            if index >= i and not inserted:
-                raise IndexError('list index out of range')
-
     def pop_left(self):
         """Remove the left most item in the list.
         """
         if self.head is None:
             raise IndexError('pop from empty list')
+        # i.e. if there is only one item in the list:
+        elif self.head is self.tail:
+            self.head, self.tail = None, None
         else:
             self.head = self.head.next_node
+            self.head.prev_node = None
 
     def pop_right(self):
         """Remove the right most item in the list.
         """
         if self.head is None:
             raise IndexError('pop from empty list')
-        if self.head.next_node is None:
-            self.head = None
+        # i.e. if there is only one item in the list:
+        elif self.head is self.tail:
+            self.head, self.tail = None, None
         else:
-            link = self.head
-            while link.next_node is not None:
-                if link.next_node.next_node is None:
-                    link.next_node = None
-                else:
-                    link = link.next_node
+            self.tail = self.tail.prev_node
+            self.tail.next_node = None
 
     def pop(self, index=None):
         """Remove an item at the given index from the list.
 
         Remove the last item if index is omitted.
         """
-        if index is None:
+        if index is None or self.head is self.tail:
             self.pop_right()
         else:
             if not isinstance(index, int):
                 raise TypeError('list indices must be integers')
-            elif self.head is None:
-                raise IndexError('pop from empty list')
-            elif index == 0:
-                self.pop_left()
-            else:
-                popped = False
-                i = 0
-                link = self.head
-                while link is not None:
-                    if i+1 == index:
-                        if link.next_node is not None:
-                            link.next_node = link.next_node.next_node
-                            popped = True
-                    link = link.next_node
-                    i += 1
-                if index >= i and not popped:
-                    raise IndexError('list index out of range')
+            link = self.head
+            i = 0
+            while link is not None:
+                if i == index:
+                    if link.prev_node is not None:
+                        link.prev_node.next_node = link.next_node
+                    else:
+                        self.pop_left()
+                    if link.next_node is not None:
+                        link.next_node.prev_node = link.prev_node
+                    else:
+                        self.pop_right()
+                link = link.next_node
+                i += 1
+            if index >= i:
+                raise IndexError('list index out of range')
 
     def contains(self, item):
-        """Return True if the given item is within the list and False otherwise.
+        """Return True if the given item is within the list. False otherwise.
         """
         link = self.head
         while link is not None:
@@ -192,17 +175,17 @@ class LinkedList:
 
 
 if __name__ == "__main__":
-    linked = LinkedList(1, 2, 3)
-    linked.append_left(0)
-    linked.append_right(4)
+    linked = DoublyLinkedList()
+    linked.append(2)
+    linked.append_left(1)
+    linked.append_right(3)
+    print(linked[1])
     print(linked.contains(2))
-    linked[2] = 'two'
-    print(linked.contains(2))
+    linked[1] = 'two'
+    print(linked.contains('two'))
     print(linked)
-    linked.pop(2)
+    linked.pop(1)
     print(linked)
     linked.pop_left()
     linked.pop_right()
-    print(linked)
-    linked.insert(1, 2)
     print(linked)

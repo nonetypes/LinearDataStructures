@@ -38,7 +38,7 @@ class Queue:
             queue + (4, 5)          # returns [1, 2, 3, (4, 5)]
             queue + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
-        if isinstance(other_item, type(self)):
+        if isinstance(other_item, Queue):
             return self.items + other_item.items
         elif isinstance(other_item, list):
             return self.items + other_item
@@ -55,7 +55,7 @@ class Queue:
 
         Remove the first item if index is omitted.
         """
-        if index:
+        if index is not None:
             del self.items[index]
         else:
             del self.items[0]
@@ -72,3 +72,13 @@ class Queue:
             return True
         else:
             return False
+
+
+if __name__ == "__main__":
+    queue = Queue(1, 2, 3)
+    queue.append(4)
+    print(queue)
+    print(queue.contains(1))
+    queue.pop()
+    print(queue.contains(1))
+    print(queue)

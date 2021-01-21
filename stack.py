@@ -38,7 +38,7 @@ class Stack:
             stack + (4, 5)          # returns [1, 2, 3, (4, 5)]
             stack + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
-        if isinstance(other_item, type(self)):
+        if isinstance(other_item, Stack):
             return self.items + other_item.items
         elif isinstance(other_item, list):
             return self.items + other_item
@@ -55,7 +55,7 @@ class Stack:
 
         Remove the last item if index is omitted.
         """
-        if index:
+        if index is not None:
             del self.items[index]
         else:
             del self.items[-1]
@@ -72,3 +72,11 @@ class Stack:
             return True
         else:
             return False
+
+
+if __name__ == "__main__":
+    stack = Stack(1, 2, 3)
+    stack.append(4)
+    print(stack)
+    stack.pop()
+    print(stack)
