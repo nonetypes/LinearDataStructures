@@ -22,10 +22,10 @@ class Stack:
         """
         return self.items[index]
 
-    def __setitem__(self, index, item):
+    def __setitem__(self, index, new_item):
         """Item assignment.
         """
-        self.items[index] = item
+        self.items[index] = new_item
 
     def __add__(self, other_item):
         """
