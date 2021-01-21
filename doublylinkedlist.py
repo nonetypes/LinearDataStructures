@@ -20,6 +20,8 @@ class DoublyLinkedList:
     Contains a head node and a tail node.
     Each node contains an item and the previous and next node in the list.
 
+    head(item, None, next_node) -> next_node(item, head, tail) -> tail(item, prev_node, None)
+
     Arguments are optional.
     Multiple argumets can be given to create multiple nodes in the list.
     """
@@ -55,7 +57,11 @@ class DoublyLinkedList:
             raise IndexError('list index out of range')
 
     def __setitem__(self, index, new_item):
-        """Item assignment. Negative indexes not supported.
+        """
+        Item assignment. Negative indexes not supported.
+
+            linked = DoublyLinkedList(1, 5, 3)
+            linked[1] = 2                # Changes 5 to 2
         """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers')
@@ -70,7 +76,7 @@ class DoublyLinkedList:
             raise IndexError('list index out of range')
 
     def append_left(self, item):
-        """Append an item to the beginning of the list, creating a new head node.
+        """Append an item to the beginning of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
         item.next_node = self.head
@@ -81,7 +87,7 @@ class DoublyLinkedList:
         self.head = item
 
     def append_right(self, item):
-        """Append an item to the end of the list, creating a new tail node.
+        """Append an item to the end of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
         item.prev_node = self.tail
@@ -101,16 +107,19 @@ class DoublyLinkedList:
         """
         if self.head is None:
             raise IndexError('pop from empty list')
+        # i.e. if there is only one item in the list:
+        elif self.head is self.tail:
+            self.head, self.tail = None, None
         else:
             self.head = self.head.next_node
-            if self.head is not None:
-                self.head.prev_node = None
+            self.head.prev_node = None
 
     def pop_right(self):
         """Remove the right most item in the list.
         """
         if self.head is None:
             raise IndexError('pop from empty list')
+        # i.e. if there is only one item in the list:
         elif self.head is self.tail:
             self.head, self.tail = None, None
         else:
@@ -160,14 +169,9 @@ class DoublyLinkedList:
         py_list = []
         link = self.head
         while link is not None:
-            py_list.append(link)
+            py_list.append(link.item)
             link = link.next_node
         return py_list
-
-    def print_nodes(self):
-        L = self.py_list()
-        for x in L:
-            print((x.prev_node, x.next_node))
 
 
 if __name__ == "__main__":
