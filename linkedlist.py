@@ -1,5 +1,5 @@
 # linkedlist.py by nonetypes
-# Last revised on 01/19/2021
+# Last revised on 01/21/2021
 
 class Node:
     """Node obect to make up the links within a LinkedList.
@@ -18,6 +18,8 @@ class LinkedList:
     """Linear data structure -- list like object.
     Contains a head node which contains an item and the next node,
     containing the next item and so forth.
+
+    head(item, next_node) -> next_node(item, next_node) -> next_node(item, None)
 
     Arguments are optional.
     Multiple argumets can be given to create multiple nodes in the list.
@@ -52,7 +54,11 @@ class LinkedList:
             raise IndexError('list index out of range')
 
     def __setitem__(self, index, new_item):
-        """Item assignment. Negative indexes not supported.
+        """
+        Item assignment. Negative indexes not supported.
+
+            linked = LinkedList(1, 5, 3)
+            linked[1] = 2                # Changes 5 to 2
         """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers')
@@ -67,7 +73,7 @@ class LinkedList:
             raise IndexError('list index out of range')
 
     def append_left(self, item):
-        """Append an item to the beginning of the list, creating a new head node.
+        """Append an item to the beginning of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
         item.next_node = self.head
@@ -141,7 +147,9 @@ class LinkedList:
 
         Remove the last item if index is omitted.
         """
-        if index is not None:
+        if index is None:
+            self.pop_right()
+        else:
             if not isinstance(index, int):
                 raise TypeError('list indices must be integers')
             elif self.head is None:
@@ -161,11 +169,9 @@ class LinkedList:
                     i += 1
                 if index >= i and not popped:
                     raise IndexError('list index out of range')
-        else:
-            self.pop_right()
 
     def contains(self, item):
-        """Return True if the given item is within the list. False otherwise.
+        """Return True if the given item is within the list and False otherwise.
         """
         link = self.head
         while link is not None:
