@@ -1,5 +1,5 @@
 # linkedlist.py by nonetypes
-# Last revised on 01/29/2021
+# Last revised on 02/02/2021
 
 class Node:
     """Node obect to make up the links within a LinkedList.
@@ -231,6 +231,28 @@ class LinkedList:
             link = link.next_node
         return py_list
 
+    def print_nodes(self):
+        """Print each node and each node's next_node in the list.
+        """
+        link = self.head
+        while link is not None:
+            print(f'{link}: {link.next_node}')
+            link = link.next_node
+
+    def reverse(self):
+        """Reverse the order of the list.
+        """
+        reversed_list = LinkedList()
+        list_length = len(self)
+        while len(reversed_list) < list_length:
+            link = self.head
+            while link is not None:
+                if link.next_node is None:
+                    reversed_list.append(link)
+                    self.pop()
+                link = link.next_node
+        self.head = reversed_list.head
+
 
 if __name__ == "__main__":
     linked = LinkedList(1, 2, 3)
@@ -247,3 +269,10 @@ if __name__ == "__main__":
     print(linked)
     linked.insert(1, 2)
     print(linked)
+    print('Printing each node\'s next_node:')
+    linked.print_nodes()
+    print('Commencing reversal of linked list.')
+    linked.reverse()
+    print(linked)
+    print('Printing each node\'s next_node:')
+    linked.print_nodes()
