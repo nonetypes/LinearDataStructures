@@ -1,5 +1,5 @@
 # doublylinkedlist.py by nonetypes
-# Last revised on 01/21/2021
+# Last revised on 01/29/2021
 
 class Node:
     """Node obect to make up the links within a DoublyLinkedList.
@@ -26,15 +26,29 @@ class DoublyLinkedList:
     Multiple argumets can be given to create multiple nodes in the list.
     """
     def __init__(self, *items):
+        # Only create nodes if the items are not already nodes.
         items = [item if isinstance(item, Node) else Node(item) for item in items]
+        # Assign each node's next_node and prev_node attributes.
         for i in range(len(items)-1):
             items[i].next_node = items[i+1]
             items[i+1].prev_node = items[i]
+        # Both a head and tail are assigned. If there is only one item in the list,
+        # the head and tail will be the same.
         self.head = items[0] if items else None
         self.tail = items[-1] if items else None
 
     def __repr__(self):
         return str(self.py_list())
+
+    def __len__(self):
+        """Return the length of the list.
+        """
+        link = self.head
+        list_length = 0
+        while link is not None:
+            list_length += 1
+            link = link.next_node
+        return list_length
 
     def __getitem__(self, index):
         """
@@ -42,10 +56,13 @@ class DoublyLinkedList:
 
             linked = DoublyLinkedList('a', 'b', 'c')
             linked[1]                # returns 'b'
-        Negative indexes not supported.
+        Slices not supported.
         """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers or slices')
+        # Negative index support.
+        if index < 0:
+            index = len(self) + index
         i = 0
         link = self.head
         while link is not None:
@@ -53,18 +70,21 @@ class DoublyLinkedList:
                 return link.item
             link = link.next_node
             i += 1
-        if index >= i:
+        if index >= i or index < 0:
             raise IndexError('list index out of range')
 
     def __setitem__(self, index, new_item):
         """
-        Item assignment. Negative indexes not supported.
+        Item assignment.
 
             linked = DoublyLinkedList(1, 5, 3)
             linked[1] = 2                # Changes 5 to 2
         """
         if not isinstance(index, int):
             raise TypeError('list indices must be integers')
+        # Negative index support.
+        if index < 0:
+            index = len(self) + index
         i = 0
         link = self.head
         while link is not None:
@@ -72,18 +92,22 @@ class DoublyLinkedList:
                 link.item = new_item
             link = link.next_node
             i += 1
-        if index >= i:
+        if index >= i or index < 0:
             raise IndexError('list index out of range')
 
     def append_left(self, item):
         """Append an item to the beginning of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
+        # Assign the given item's (new node) next_node to the old head.
         item.next_node = self.head
         if self.head is not None:
+            # The old head's prev_node becomes the new node
             self.head.prev_node = item
+        # If there wasn't a tail, the tail also becomes the new node.
         if self.tail is None:
             self.tail = item
+        # Finally, the new node becomes the new head.
         self.head = item
 
     def append_right(self, item):
@@ -102,55 +126,100 @@ class DoublyLinkedList:
         """
         self.append_right(item)
 
+    def insert(self, index, item):
+        """Insert the given item at the given index.
+        """
+        if not isinstance(index, int):
+            raise TypeError('list indices must be integers')
+        item = item if isinstance(item, Node) else Node(item)
+        # Negative index support.
+        if index < 0:
+            index = len(self) + index
+        # To simplify inserting into an empty list.
+        if index == 0:
+            self.append_left(item)
+        else:
+            inserted = False
+            i = 0
+            link = self.head
+            while link is not None:
+                if i == index:
+                    item.prev_node = link.prev_node
+                    item.next_node = link
+                    link.prev_node.next_node = item
+                    link.prev_node = item
+                    inserted = True
+                link = link.next_node
+                i += 1
+            # Inserting at the end of the list.
+            if i == index:
+                self.append_right(item)
+                inserted = True
+            # Assume index out of range if nothing was inserted.
+            if not inserted:
+                raise IndexError('list index out of range')
+
     def pop_left(self):
-        """Remove the left most item in the list.
+        """Remove the left most item in the list and return it.
         """
         if self.head is None:
             raise IndexError('pop from empty list')
+        popped_item = self.head.item
         # i.e. if there is only one item in the list:
-        elif self.head is self.tail:
+        if self.head is self.tail:
             self.head, self.tail = None, None
         else:
             self.head = self.head.next_node
             self.head.prev_node = None
+        return popped_item
 
     def pop_right(self):
-        """Remove the right most item in the list.
+        """Remove the right most item in the list and return it.
         """
         if self.head is None:
             raise IndexError('pop from empty list')
+        popped_item = self.tail.item
         # i.e. if there is only one item in the list:
-        elif self.head is self.tail:
+        if self.head is self.tail:
             self.head, self.tail = None, None
         else:
             self.tail = self.tail.prev_node
             self.tail.next_node = None
+        return popped_item
 
     def pop(self, index=None):
-        """Remove an item at the given index from the list.
+        """Remove an item at the given index from the list and return it.
 
         Remove the last item if index is omitted.
         """
-        if index is None or self.head is self.tail:
-            self.pop_right()
+        if index is None:
+            return self.pop_right()
         else:
             if not isinstance(index, int):
                 raise TypeError('list indices must be integers')
+            elif self.head is None:
+                raise IndexError('pop from empty list')
+            # Negative index support.
+            if index < 0:
+                index = len(self) + index
             link = self.head
             i = 0
             while link is not None:
                 if i == index:
-                    if link.prev_node is not None:
+                    popped_item = link.item
+                    if link.prev_node is None:
+                        return self.pop_left()
+                    elif link.next_node is None:
+                        return self.pop_right()
+                    else:
+                        # Overwrite the current link from the prev_node's
+                        # next_node and the from the next_node's prev_node.
                         link.prev_node.next_node = link.next_node
-                    else:
-                        self.pop_left()
-                    if link.next_node is not None:
                         link.next_node.prev_node = link.prev_node
-                    else:
-                        self.pop_right()
+                    return popped_item
                 link = link.next_node
                 i += 1
-            if index >= i:
+            if index >= i or index < 0:
                 raise IndexError('list index out of range')
 
     def contains(self, item):
@@ -173,6 +242,14 @@ class DoublyLinkedList:
             link = link.next_node
         return py_list
 
+    def print_nodes(self):
+        """Print each node's previous and next nodes.
+        """
+        link = self.head
+        while link is not None:
+            print(f'{link}: {(link.prev_node, link.next_node)}')
+            link = link.next_node
+
 
 if __name__ == "__main__":
     linked = DoublyLinkedList()
@@ -184,8 +261,13 @@ if __name__ == "__main__":
     linked[1] = 'two'
     print(linked.contains('two'))
     print(linked)
-    linked.pop(1)
+    linked.print_nodes()
+    print(f'"{linked.pop(1)}" was popped.')
     print(linked)
-    linked.pop_left()
-    linked.pop_right()
+    linked.insert(1, 2)
+    print(linked)
+    linked.print_nodes()
+    print(linked.pop_left())
+    print(linked.pop_right())
+    linked.pop(0)
     print(linked)

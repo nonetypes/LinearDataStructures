@@ -1,5 +1,5 @@
 # stack.py by nonetypes
-# Last revised on 01/14/2021
+# Last revised on 01/29/2021
 
 class Stack:
     """List like object. Last in, first out.
@@ -12,6 +12,11 @@ class Stack:
         """Return a printable string version of self.items
         """
         return str(self.items)
+
+    def __len__(self):
+        """Return the len() of self.items
+        """
+        return len(self.items)
 
     def __getitem__(self, index):
         """
@@ -29,7 +34,7 @@ class Stack:
 
     def __add__(self, other_item):
         """
-        Concatenation support:
+        Concatenation support. Returns a concatenated list and not a Stack.
 
             stack = Stack(1, 2, 3)
             stack + 4               # returns [1, 2, 3, 4]
@@ -51,14 +56,17 @@ class Stack:
         self.items += [item]
 
     def pop(self, index=None):
-        """Remove an item at given index from the stack.
+        """Remove an item at given index from the stack and return it.
 
         Remove the last item if index is omitted.
         """
         if index is not None:
+            popped_item = self.items[index]
             del self.items[index]
         else:
+            popped_item = self.items[-1]
             del self.items[-1]
+        return popped_item
 
     def remove(self, item):
         """Remove the given item from the stack.
