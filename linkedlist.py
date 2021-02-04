@@ -36,7 +36,14 @@ class LinkedList:
         return str(self.py_list())
 
     def __len__(self):
-        return len(self.py_list())
+        """Return the length of the list.
+        """
+        link = self.head
+        list_length = 0
+        while link is not None:
+            list_length += 1
+            link = link.next_node
+        return list_length
 
     def __getitem__(self, index):
         """
