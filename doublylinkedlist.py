@@ -1,5 +1,5 @@
 # doublylinkedlist.py by nonetypes
-# Last revised on 01/29/2021
+# Last revised on 02/04/2021
 
 class Node:
     """Node obect to make up the links within a DoublyLinkedList.
@@ -29,6 +29,7 @@ class DoublyLinkedList:
         # Only create nodes if the items are not already nodes.
         items = [item if isinstance(item, Node) else Node(item) for item in items]
         # Assign each node's next_node and prev_node attributes.
+        # 1 less than the len of items to avoid index out of range error.
         for i in range(len(items)-1):
             items[i].next_node = items[i+1]
             items[i+1].prev_node = items[i]
@@ -41,7 +42,7 @@ class DoublyLinkedList:
         return str(self.py_list())
 
     def __len__(self):
-        """Return the length of the list.
+        """Return the number of items in the list.
         """
         link = self.head
         list_length = 0
@@ -59,7 +60,7 @@ class DoublyLinkedList:
         Slices not supported.
         """
         if not isinstance(index, int):
-            raise TypeError('list indices must be integers or slices')
+            raise TypeError('list indices must be integers')
         # Negative index support.
         if index < 0:
             index = len(self) + index
@@ -95,12 +96,46 @@ class DoublyLinkedList:
         if index >= i or index < 0:
             raise IndexError('list index out of range')
 
+    def __add__(self, other_item):
+        """Concatenation support.
+        """
+        # To keep the original linkedlist intact:
+        new_linked = DoublyLinkedList()
+        for node in self:
+            new_linked.append(node.item)
+
+        if isinstance(other_item, DoublyLinkedList):
+            if new_linked.head is not None:
+                new_linked.tail.next_node = other_item.head
+                other_item.head.prev_node = new_linked.tail
+                new_linked.tail = other_item.tail
+            else:
+                new_linked.head = other_item.head
+                new_linked.tail = other_item.tail
+        # Reasoning for having it work this way: it quickly allows en mass appends.
+        elif isinstance(other_item, list):
+            for item in other_item:
+                new_linked.append(item)
+        else:
+            new_linked.append(other_item)
+        return new_linked
+
+    def __iter__(self):
+        """Iteration support.
+        """
+        link = self.head
+        while link is not None:
+            yield link
+            link = link.next_node
+
     def append_left(self, item):
         """Append an item to the beginning of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
         # Assign the given item's (new node) next_node to the old head.
         item.next_node = self.head
+        # In case a Node is passed which has a prev_node.
+        item.prev_node = None
         if self.head is not None:
             # The old head's prev_node becomes the new node
             self.head.prev_node = item
@@ -115,6 +150,7 @@ class DoublyLinkedList:
         """
         item = item if isinstance(item, Node) else Node(item)
         item.prev_node = self.tail
+        item.next_node = None
         if self.tail is not None:
             self.tail.next_node = item
         if self.head is None:
@@ -269,5 +305,13 @@ if __name__ == "__main__":
     linked.print_nodes()
     print(linked.pop_left())
     print(linked.pop_right())
-    linked.pop(0)
     print(linked)
+    new_linked = linked + DoublyLinkedList('eggs', 'spam')
+    print(new_linked)
+    for x in new_linked:
+        print(f'{x}.prev_node is {x.prev_node} and {x}.next_node is {x.next_node}')
+    print(linked)
+    linked += [3, 4, 5]
+    print(linked)
+    print(type(linked), linked.head, linked.tail)
+    linked.print_nodes()
