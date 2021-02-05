@@ -34,7 +34,7 @@ class Stack:
 
     def __add__(self, other_item):
         """
-        Concatenation support. Returns a concatenated list and not a Stack.
+        Concatenation support.
 
             stack = Stack(1, 2, 3)
             stack + 4               # returns [1, 2, 3, 4]
@@ -43,12 +43,17 @@ class Stack:
             stack + (4, 5)          # returns [1, 2, 3, (4, 5)]
             stack + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
+        new_stack = Stack()
         if isinstance(other_item, Stack):
-            return self.items + other_item.items
+            for item in self.items + other_item.items:
+                new_stack.append(item)
         elif isinstance(other_item, list):
-            return self.items + other_item
+            for item in self.items + other_item:
+                new_stack.append(item)
         else:
-            return self.items + [other_item]
+            for item in self.items + [other_item]:
+                new_stack.append(item)
+        return new_stack
 
     def append(self, item):
         """Append an item to the end of the stack.
@@ -88,3 +93,5 @@ if __name__ == "__main__":
     print(stack)
     stack.pop()
     print(stack)
+    stack += 'five'
+    print(type(stack), stack)

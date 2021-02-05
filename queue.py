@@ -34,7 +34,7 @@ class Queue:
 
     def __add__(self, other_item):
         """
-        Concatenation support. Returns a concatenated list and not a Queue.
+        Concatenation support.
 
             queue = Queue(1, 2, 3)
             queue + 4               # returns [1, 2, 3, 4]
@@ -43,12 +43,17 @@ class Queue:
             queue + (4, 5)          # returns [1, 2, 3, (4, 5)]
             queue + {'a': 1}        # returns [1, 2, 3, {'a': 1}]
         """
+        new_queue = Queue()
         if isinstance(other_item, Queue):
-            return self.items + other_item.items
+            for item in self.items + other_item.items:
+                new_queue.append(item)
         elif isinstance(other_item, list):
-            return self.items + other_item
+            for item in self.items + other_item:
+                new_queue.append(item)
         else:
-            return self.items + [other_item]
+            for item in self.items + [other_item]:
+                new_queue.append(item)
+        return new_queue
 
     def append(self, item):
         """Append an item to the end of the queue.
@@ -90,3 +95,5 @@ if __name__ == "__main__":
     queue.pop()
     print(queue.contains(1))
     print(queue)
+    queue += {'a': 1}
+    print(type(queue), queue)
