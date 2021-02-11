@@ -1,5 +1,5 @@
 # linkedlist.py by nonetypes
-# Last revised on 02/02/2021
+# Last revised on 02/11/2021
 
 class Node:
     """Node obect to make up the links within a LinkedList.
@@ -102,6 +102,8 @@ class LinkedList:
         """Append an item to the end of the list.
         """
         item = item if isinstance(item, Node) else Node(item)
+        # Ensure that the new node's next_node points to None
+        item.next_node = None
         if self.head is None:
             self.head = item
         else:
@@ -242,9 +244,12 @@ class LinkedList:
     def reverse(self):
         """Reverse the order of the list.
         """
+        # When the end of the list is reached, append the tail to the
+        # new reversed_list and pop it from the old one.
+        # The old list now has a new tail and the process is started
+        # over until the old list is empty.
         reversed_list = LinkedList()
-        list_length = len(self)
-        while len(reversed_list) < list_length:
+        while len(self):
             link = self.head
             while link is not None:
                 if link.next_node is None:
@@ -275,4 +280,13 @@ if __name__ == "__main__":
     linked.reverse()
     print(linked)
     print('Printing each node\'s next_node:')
+    linked.print_nodes()
+    # Test whether reverse() raises an error on an empty list.
+    linked = LinkedList()
+    linked.reverse()
+    print(linked)
+    # Test whether reverse() reaises an error on a list of one item.
+    linked.append('spam')
+    linked.reverse()
+    print(linked)
     linked.print_nodes()
