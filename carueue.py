@@ -154,27 +154,18 @@ if __name__ == "__main__":
     print(carueue)
     carueue.find_carmen()
 
-    # car = Carueue()
-    # for i in range(1_000_000):
-    #     car.append('aaaaaaaaaaaaaa')
-    # car.append('Carmen Sandiego')
-    # car.append('Nerd Egomaniacs')
-    # start_time = time()
-    # car.find_carmen()
-    # stop_time = time()
-
-    # print(stop_time - start_time)
-
     # Time complexity of find_carmen():
     #
+    # Version 1:
     # Permutations are not considered. An exact match was found at the end of the list.
     # Approach: 1, 2, and 4 million items are appended to a carueue,
     # followed by 'Carmen Sandiego'. carueue.find_carmen() is timed for each.
     # 1,000,000: ~ .28 seconds
     # 2,000,000: ~ .56 seconds
-    # 4,o00,000: ~ 1.1 seconds
+    # 4,000,000: ~ 1.1 seconds
     # Complexity: O(n)
     #
+    # Version 2:
     # Permutations are considered and a match is found at the end of the list.
     # Approach: 'aaaaaaaaaaaaaa' is appended to a carueue 1, 2, and 4 million times,
     # followed by an anagram of Carmen Sandiego. carueue.find_carmen() is timed for each.
@@ -182,8 +173,8 @@ if __name__ == "__main__":
     # will be initiated for every item in the list to determine if it is a permutation.
     # 1,000,000: ~ 4 seconds
     # 2,000,000: ~ 8 seconds
-    # 4,o00,000: ~ 16 seconds
+    # 4,000,000: ~ 16 seconds
     # Complexity: O(n)
     #
     # Complexity in both cases is linear, i.e.
-    # time increases linearly with the size of the list.
+    # Time increases linearly with the size of the list.
