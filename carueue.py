@@ -128,16 +128,15 @@ class Carueue:
         for item in self.items:
             item = str(item).lower().replace(' ', '')
             if is_permutation(item, 'carmensandiego'):
-                formatted_index = i
-                if formatted_index == 0:
-                    formatted_index = '1st'
-                elif formatted_index == 1:
-                    formatted_index = '2nd'
-                elif formatted_index == 2:
-                    formatted_index = '3rd'
+                if i == 0:
+                    position = '1st'
+                elif i == 1:
+                    position = '2nd'
+                elif i == 2:
+                    position = '3rd'
                 else:
-                    formatted_index = f'{formatted_index+1}th'
-                print(f'Carmen Sandiego is {formatted_index} in line.')
+                    position = f'{i+1}th'
+                print(f'Carmen Sandiego is {position} in line.')
                 return
             i += 1
         print('Failed to find Carmen Sandiego...')
