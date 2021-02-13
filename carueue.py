@@ -1,26 +1,37 @@
 # carueue.py by nonetypes
-# Last revised on 02/02/2021
+# Last revised on 02/12/2021
+# A simple queue with a Carmen Sandiego themed method.
 
+def is_permutation(test, word, case_sensitive=False):
+    """Determines if the given test word is a permutation of the given word.
 
-def is_permutation(word, test):
-    """Determines if the given word is a permutation of the given test word.
+    Not case-sensitive by default.
     """
-    if len(word) != len(test):
+    # For speed and so that cars will not be determined to be a permutation of car.
+    if len(test) != len(word):
         return False
-    word = word.lower()
-    test = list(test.lower())
-    for letter in word:
-        if letter in test:
-            test.remove(letter)
-    if test:
+    if not case_sensitive:
+        test = test.lower()
+        word = word.lower()
+    # If an exact match is found, return true to save time.
+    if test == word:
+        return True
+    word = list(word)
+    # Remove letters from word as they are matched from test.
+    for letter in test:
+        if letter in word:
+            word.remove(letter)
+    if word:
         return False
+    # word is empty: All letters were matched -- permutation confirmed.
     else:
         return True
 
 
 class Carueue:
-    """List like object. First in, first out.
-    Concatenation support between various built-in objects.
+    """Queue. First in, first out.
+
+    Specially designed for determining if Carmen Sandiego is within the queue.
     """
     def __init__(self, *items):
         self.items = list(items)
@@ -104,15 +115,19 @@ class Carueue:
             return False
 
     def find_carmen(self):
-        """Determine if Carmen Sandiego is within the queue, and print
+        """Determine if Carmen Sandiego is within the queue and print
         her position if she is.
 
         Determinations are not case sensitive, will disregard spaces, and will
         consider anagrams and scrambles of carmensandiego.
+
+        If multiple Carmen Sandiegos exist in the list, the first one found
+        is considered the real one -- the rest are assumed to be imposters.
         """
         i = 0
         for item in self.items:
-            if is_permutation(str(item).replace(' ', ''), 'carmensandiego'):
+            item = str(item).lower().replace(' ', '')
+            if is_permutation(item, 'carmensandiego'):
                 formatted_index = i
                 if formatted_index == 0:
                     formatted_index = '1st'
@@ -129,7 +144,7 @@ class Carueue:
 
 
 if __name__ == "__main__":
-    carueue = Carueue(1, 2, 'not carmen sandiego')
+    carueue = Carueue(1, 2, 'Not Carmen Sandiego')
     print(carueue)
     carueue.find_carmen()
     carueue.append('Nerd Egomaniacs')
@@ -138,3 +153,37 @@ if __name__ == "__main__":
     carueue.pop()
     print(carueue)
     carueue.find_carmen()
+
+    # car = Carueue()
+    # for i in range(1_000_000):
+    #     car.append('aaaaaaaaaaaaaa')
+    # car.append('Carmen Sandiego')
+    # car.append('Nerd Egomaniacs')
+    # start_time = time()
+    # car.find_carmen()
+    # stop_time = time()
+
+    # print(stop_time - start_time)
+
+    # Time complexity of find_carmen():
+    #
+    # Permutations are not considered. An exact match was found at the end of the list.
+    # Approach: 1, 2, and 4 million items are appended to a carueue,
+    # followed by 'Carmen Sandiego'. carueue.find_carmen() is timed for each.
+    # 1,000,000: ~ .28 seconds
+    # 2,000,000: ~ .56 seconds
+    # 4,o00,000: ~ 1.1 seconds
+    # Complexity: O(n)
+    #
+    # Permutations are considered and a match is found at the end of the list.
+    # Approach: 'aaaaaaaaaaaaaa' is appended to a carueue 1, 2, and 4 million times,
+    # followed by an anagram of Carmen Sandiego. carueue.find_carmen() is timed for each.
+    # 'aaaaaaaaaaaaaa' is 14 characters long and therefore a letter by letter comparison
+    # will be initiated for every item in the list to determine if it is a permutation.
+    # 1,000,000: ~ 4 seconds
+    # 2,000,000: ~ 8 seconds
+    # 4,o00,000: ~ 16 seconds
+    # Complexity: O(n)
+    #
+    # Complexity in both cases is linear, i.e.
+    # time increases linearly with the size of the list.
