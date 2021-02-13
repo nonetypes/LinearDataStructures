@@ -176,5 +176,5 @@ if __name__ == "__main__":
     # 4,000,000: ~ 16 seconds
     # Complexity: O(n)
     #
-    # Complexity in both cases is linear, i.e.
-    # Time increases linearly with the size of the list.
+    # Time complexity in both cases is linear, i.e.
+    # Execution time increases linearly with the number of items in the list preceding Carmen Sandiego.
