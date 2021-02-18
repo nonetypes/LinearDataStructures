@@ -1,5 +1,5 @@
 # linkedlist.py by nonetypes
-# Last revised on 01/29/2021
+# Last revised on 02/17/2021
 
 class Node:
     """Node obect to make up the links within a LinkedList.
@@ -244,6 +244,7 @@ class LinkedList:
         is a 'circle', i.e. it eventually points back to the head node,
         or is a 'lollipop', i.e. it eventually points to an earlier node that is not the head.
         """
+        # Hare will traverse list twice as fast as tortoise.
         tort = self.head
         hare = self.head
         while tort is not None and hare is not None:
@@ -252,7 +253,6 @@ class LinkedList:
                 return 'circle'
             elif hare is tort:
                 return 'lollipop'
-            # Hare traverses list twice as fast as tortoise.
             elif hare is not None:
                 hare = hare.next_node
             # Check if hare is head or tort at each step for efficiency.
@@ -269,19 +269,17 @@ class LinkedList:
         return 'terminating'
 
     def has_cycle(self):
-        """Determine if the list contains a cycle, returning True if it does
-        and False otherwise.
+        """Determine if the list contains a cycle, i.e. if a node points to an earlier
+        node in the list, returning True if it does and False otherwise.
         """
-        link = self.head
         node_list = []
+        link = self.head
         while link is not None:
             if link in node_list:
                 return True
             else:
                 node_list.append(link)
             link = link.next_node
-            if link is self.head:
-                return True
         return False
 
 
