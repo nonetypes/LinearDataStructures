@@ -1,5 +1,5 @@
 # linkedlist.py by nonetypes
-# Last revised on 01/29/2021
+# Last revised on 02/17/2021
 
 class Node:
     """Node obect to make up the links within a LinkedList.
@@ -62,7 +62,7 @@ class LinkedList:
         link = self.head
         while link is not None:
             if index == i:
-                return link.item
+                return link
             link = link.next_node
             i += 1
         if index >= i or index < 0:
@@ -70,7 +70,7 @@ class LinkedList:
 
     def __setitem__(self, index, new_item):
         """
-        Item assignment. Negative indexes not supported.
+        Item assignment.
 
             linked = LinkedList(1, 5, 3)
             linked[1] = 2                # Changes 5 to 2
@@ -89,6 +89,12 @@ class LinkedList:
             i += 1
         if index >= i or index < 0:
             raise IndexError('list index out of range')
+
+    def __iter__(self):
+        link = self.head
+        while link is not None:
+            yield link
+            link = link.next_node
 
     def append_left(self, item):
         """Append an item to the beginning of the list.
@@ -231,6 +237,51 @@ class LinkedList:
             link = link.next_node
         return py_list
 
+    def classify(self):
+        """Returns one of three strings: 'terminating', 'circle', or 'lollipop'.
+
+        Determines if the list is 'terminating', i.e. it eventually points to None,
+        is a 'circle', i.e. it eventually points back to the head node,
+        or is a 'lollipop', i.e. it eventually points to an earlier node that is not the head.
+        """
+        # Hare will traverse list twice as fast as tortoise.
+        tort = self.head
+        hare = self.head
+        while tort is not None and hare is not None:
+            hare = hare.next_node
+            if hare is self.head:
+                return 'circle'
+            elif hare is tort:
+                return 'lollipop'
+            elif hare is not None:
+                hare = hare.next_node
+            # Check if hare is head or tort at each step for efficiency.
+            if hare is self.head:
+                return 'circle'
+            elif hare is tort:
+                return 'lollipop'
+            tort = tort.next_node
+            if tort is self.head:
+                return 'circle'
+            elif tort is hare:
+                return 'lollipop'
+        # Loop is escaped if the tort or hare is None, confirming a terminating list.
+        return 'terminating'
+
+    def has_cycle(self):
+        """Determine if the list contains a cycle, i.e. if a node points to an earlier
+        node in the list, returning True if it does and False otherwise.
+        """
+        node_list = []
+        link = self.head
+        while link is not None:
+            if link in node_list:
+                return True
+            else:
+                node_list.append(link)
+            link = link.next_node
+        return False
+
 
 if __name__ == "__main__":
     linked = LinkedList(1, 2, 3)
@@ -247,3 +298,14 @@ if __name__ == "__main__":
     print(linked)
     linked.insert(1, 2)
     print(linked)
+    # Confirm that list is terminating.
+    print(linked.has_cycle(), linked.classify())
+    # Circle test.
+    linked.append(linked.head)
+    print(linked.has_cycle(), linked.classify())
+    # Lollipop test.
+    linked = LinkedList(1, 2, 3, 4, 5, 6)
+    # The sixth (last) node will point to the second node.
+    linked[5].next_node = linked[1]
+    print(linked[5], linked[5].next_node)
+    print(linked.has_cycle(), linked.classify())
